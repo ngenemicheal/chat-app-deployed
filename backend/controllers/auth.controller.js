@@ -1,6 +1,7 @@
 import User from '../models/user.model.js';
 import bcrypt from 'bcryptjs';
 import generateTokenAndSetCookie from '../utils/generateToken.js';
+import getProfilePictureUrl from '../utils/generatePictureUrl.js';
 
 export const signup = async (req, res) => {
     try {
@@ -19,15 +20,14 @@ export const signup = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashPassword = await bcrypt.hash(password, salt);
 
-        const boyProPic = `https://avatar.iran.liara.run/public/boy?username=${username}`;
-        const girlProPic = `https://avatar.iran.liara.run/public/girl?username=${username}`;
+        const profilePictureUrl = getProfilePictureUrl(username);
 
         const newUser = new User({
             fullName,
             username,
             password: hashPassword,
             gender,
-            profilePicture: gender === 'male' ? boyProPic : girlProPic
+            profilePicture: profilePictureUrl
         });
 
         if (newUser) {
